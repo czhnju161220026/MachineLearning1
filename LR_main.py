@@ -100,11 +100,11 @@ class BinaryClassfier:
     def get_confusion_matrix(self):
         return [self.tp, self.fp, self.tn, self.fn]
 
-    def export_model(self, path):
-        fout = open(path, "a+")
+    def export_model(self,fout):
         for i in self.beta:
-            fout.write(str(i) + " ")
-        fout.write("\n")
+            fout.write(str(i)+' ')
+        fout.write('\n')
+
 
 
 # 训练单个模型
@@ -193,7 +193,7 @@ class SingleTrainer:
 
             self.beta = self.beta - np.array(delta.tolist()[0])
             a2 = self.log_likelihood_function()
-            print("log_likelihoot: " + str(a2))
+            print("log_likelihood: " + str(a2))
             if abs(a2 - a1) < break_condition:
                 break
             a1 = a2
@@ -225,12 +225,15 @@ class MultiTrainer:
             negative_set = split(i + 1, positive_set.size() * 9.5, self.groups)
             train_set = TrainSet(positive_set, negative_set)
             trainer = SingleTrainer(train_set)
-            # trainer.train_gradient_descent() 使用梯度下降法而非牛顿法
+            # trainer.train_gradient_descent() 使用牛顿法而非梯度下降法
             trainer.train_newton_method()
             classifier = trainer.get_classifier()
             classifier.set_confusion_matrix(test_single_classifier(classifier, i + 1))
             self.classifiers.append(classifier)
-            classifier.export_model("model.txt")
+        fout = open("models.txt",'w')
+        for classifier in self.classifiers:
+            classifier.export_model(fout)
+        fout.close()
 
     def get_classifiers(self):
         return self.classifiers
@@ -246,15 +249,19 @@ class Tester:
         n = len(self.test_samples)
         right_case = 0
         wrong_case = 0
+        classification_matrix = np.zeros((26, 26))
         for sample in self.test_samples:
             logits = []
             for classifier in self.classifiers:
                 logits.append(classifier.classify(sample))
             result = np.argmax(np.array(logits)) + 1
+
             if result == sample.label:
                 right_case = right_case + 1
             else:
                 wrong_case = wrong_case + 1
+            classification_matrix[result - 1][sample.label - 1] = classification_matrix[result - 1][
+                                                                      sample.label - 1] + 1
         print("N = " + str(n) + " Wrong = " + str(wrong_case) + " Right = " + str(right_case))
         print("Accuarcy = " + str(right_case * 1.0 / n))
         confusion_matrixs = []
@@ -286,6 +293,7 @@ class Tester:
         print("micro-P: " + str(micro_P))
         print("micro-R: " + str(micro_R))
         print("micro-F1: " + str(micro_F1))
+        export_classification_matrix(classification_matrix)
 
 
 # 对样本欠采样，均匀采样生成和正例数目接近的反例
@@ -393,7 +401,21 @@ def train_and_test():
     tester.test()
 
 
+def export_classification_matrix(classification_matrix):
+    alpha_list = 'abcdefghijklmnopqrstuvwxyz'
+    file = open("classification_matrix.txt", 'w')
+    file.write('a   b   c   d   e   f   g   h   i   j   k   l   m   n   o   p   q   r   s   t   u   v   w   x   y   z  <-- classify as\n')
+    for i in range(26):
+        for j in range(26):
+            file.write('%-4s'%str(int(classification_matrix[i][j])))
+        file.write(alpha_list[i])
+        file.write('\n')
+    file.close()
+
+
 # 使用牛顿法要优于梯度下降，牛顿法收敛极快，准确度高
 if __name__ == "__main__":
-    # test_exisiting_models("model.txt")
+    #test_exisiting_models("model.txt")
     train_and_test()
+
+# breakcondition = 1e-4 , Accuracy = 72.2%
