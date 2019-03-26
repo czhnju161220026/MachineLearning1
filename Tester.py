@@ -63,10 +63,11 @@ class Tester:
         wrong_case = 0
         classification_matrix = np.zeros((26, 26))
         for sample in self.test_samples:
-            logits = []
+            results = []
             for classifier in self.classifiers:
-                logits.append(classifier.classify(sample))
-            result = np.argmax(np.array(logits)) + 1
+                # 统计每个分类器输出的对数概率 与 准确率 的乘积，作为最终的判别标准
+                results.append(classifier.classify(sample) * classifier.get_accuracy())
+            result = np.argmax(np.array(results)) + 1
 
             if result == sample.label:
                 right_case = right_case + 1
@@ -100,10 +101,10 @@ class Tester:
         print("-----------------------------------* Result *------------------------------------")
         export_classification_matrix(classification_matrix)
         print("N = " + str(n) + " Wrong = " + str(wrong_case) + " Right = " + str(right_case))
-        print("Accuarcy = " + str(right_case * 1.0 / n))
-        print("macro-P: " + str(macro_P))
-        print("macro-R: " + str(macro_R))
-        print("macro-F1: " + str(macro_F1))
-        print("micro-P: " + str(micro_P))
-        print("micro-R: " + str(micro_R))
-        print("micro-F1: " + str(micro_F1))
+        print("Accuarcy = %.4f" % (right_case * 1.0 / n))
+        print("macro-P: %.4f" % macro_P)
+        print("macro-R: %.4f" % macro_R)
+        print("macro-F1: %.4f" % macro_F1)
+        print("micro-P: %.4f" % micro_P)
+        print("micro-R: %.4f" % micro_R)
+        print("micro-F1: %.4f" % micro_F1)

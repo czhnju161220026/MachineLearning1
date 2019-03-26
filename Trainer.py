@@ -154,7 +154,7 @@ class MultiTrainer:
         for i in range(26):
             print("-------------------Training Classifier: %s---------------" % str(i))
             positive_set = self.groups[i]
-            negative_set = split(i + 1, positive_set.size() * 9.5, self.groups)
+            negative_set = split(i + 1, positive_set.size() * 15, self.groups)
             train_set = TrainSet(positive_set, negative_set)
             trainer = SingleTrainer(train_set)
             # trainer.train_gradient_descent() 使用牛顿法而非梯度下降法

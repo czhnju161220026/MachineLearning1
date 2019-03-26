@@ -108,8 +108,12 @@ def split(positive_label, num, groups):
     for i in range(0, len(groups)):
         if i != positive_label - 1:
             step = int(groups[i].size() / n)  # 根据步长，均匀采样
+            if step == 0:
+                step = 1
             j = 1
             while j < groups[i].size():
                 negative_group.add_sample(groups[i].get_sample(j))
                 j = j + step
     return negative_group
+
+

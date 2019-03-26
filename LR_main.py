@@ -5,6 +5,8 @@ from Trainer import BinaryClassfier
 from Trainer import MultiTrainer
 # 第三方库
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 # 从文件加载分类器
 def load_classifiers(path):
@@ -52,4 +54,5 @@ if __name__ == "__main__":
     # 训练模型，并测试。测试后生成模型文件
     train_and_test("train_set.csv", "test_set.csv")
 
-# breakcondition = 1e-4 , Accuracy = 72.2%
+# breakcondition = 1e-5 , 9.5 Accuracy = 72.2%
+# breakcondition = 1e-5 , 15 Accuracy = 72.57%
