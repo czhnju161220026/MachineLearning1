@@ -48,6 +48,9 @@ def train_and_test(train_set_path, test_set_path):
     tester.test()
 
 
+# main函数
+# 可以通过调用test_existing_models函数，测试已经训练好的模型。模型文件models.txt和报告代码一并上传。
+# 也可以调用train_and_test函数，进行训练测试的完整过程，大约耗时1-2分钟。
 if __name__ == "__main__":
     # 从文件中加载模型，并测试
     # test_exisiting_models("models.txt", "test_set.csv")
