@@ -1,3 +1,4 @@
+#coding=utf-8
 from Preprocess import Sample, TrainSet, split, get_test_samples
 # 第三方库
 import numpy as np

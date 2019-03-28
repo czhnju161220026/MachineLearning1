@@ -1,3 +1,4 @@
+#coding=utf-8
 from Preprocess import get_test_samples
 from Preprocess import get_train_sample_groups
 from Tester import Tester

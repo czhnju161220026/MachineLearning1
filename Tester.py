@@ -1,3 +1,4 @@
+#coding=utf-8
 from Preprocess import Sample
 from Trainer import BinaryClassfier
 # 第三方库
